@@ -1,8 +1,12 @@
-// idb.js
+/*
+1. first name: aviv , last name: levi, id: 319123287 .
+2. first name: mor , last name: moshe, id: 208658880 .
+*/
 
 const idb = (function () {
     let db;
 
+    // open the database and return an object with all methods
     function openCaloriesDB(dbName, version) {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open(dbName, version);
@@ -16,7 +20,13 @@ const idb = (function () {
 
             request.onsuccess = function (event) {
                 db = event.target.result;
-                resolve(db);
+                console.log("Database opened successfully");
+
+                // return an object with all functions once DB is ready
+                resolve({
+                    addCalories: addCalories,
+                    getCaloriesByMonthAndYear: getCaloriesByMonthAndYear
+                });
             };
 
             request.onerror = function (event) {
@@ -25,6 +35,7 @@ const idb = (function () {
         });
     }
 
+    // add a new calorie item
     function addCalories(calorieItem) {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction(["calories"], "readwrite");
@@ -41,6 +52,7 @@ const idb = (function () {
         });
     }
 
+    // get calories by month and year
     function getCaloriesByMonthAndYear(month, year) {
         return new Promise((resolve, reject) => {
             const transaction = db.transaction(["calories"], "readonly");
@@ -63,8 +75,7 @@ const idb = (function () {
     }
 
     return {
-        openCaloriesDB,
-        addCalories,
-        getCaloriesByMonthAndYear
+        openCaloriesDB
     };
 })();
+
